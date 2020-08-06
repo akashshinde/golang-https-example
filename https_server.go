@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	caCert, err := ioutil.ReadFile("client.crt")
+	caCert, err := ioutil.ReadFile("/var/server.crt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -19,16 +19,23 @@ func main() {
 		ClientAuth: tls.RequireAndVerifyClientCert,
 		ClientCAs:  caCertPool,
 	}
+	http.HandleFunc("/index.yaml", handler)
 	srv := &http.Server{
 		Addr:      ":8443",
-		Handler:   &handler{},
 		TLSConfig: cfg,
 	}
-	log.Fatal(srv.ListenAndServeTLS("server.crt", "server.key"))
+	log.Fatal(srv.ListenAndServeTLS("/var/server.crt", "/var/server.key"))
 }
 
-type handler struct{}
-
-func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	w.Write([]byte("PONG\n"))
+func handler(w http.ResponseWriter, r *http.Request) {
+	resp, err := http.Get("https://azure-samples.github.io/helm-charts/index.yaml")
+	if err != nil {
+		panic(err)
+	}
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+	w.Write(data)
 }
+

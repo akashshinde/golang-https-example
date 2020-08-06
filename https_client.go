@@ -17,7 +17,7 @@ func main() {
 	caCertPool := x509.NewCertPool()
 	caCertPool.AppendCertsFromPEM(caCert)
 
-	cert, err := tls.LoadX509KeyPair("client.crt", "client.key")
+	cert, err := tls.LoadX509KeyPair("server.crt", "server.key")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,7 +31,7 @@ func main() {
 		},
 	}
 
-	resp, err := client.Get("https://localhost:8443")
+	resp, err := client.Get("https://localhost:8443/index.yaml")
 	if err != nil {
 		log.Println(err)
 		return
