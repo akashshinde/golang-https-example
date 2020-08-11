@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+	u := "https://go-https-akash-tls-test.apps.dev-svc-4.5-080701.devcluster.openshift.com/index.yaml"
 	caCert, err := ioutil.ReadFile("server.crt")
 	if err != nil {
 		log.Fatal(err)
@@ -31,7 +32,7 @@ func main() {
 		},
 	}
 
-	resp, err := client.Get("https://localhost:8443/index.yaml")
+	resp, err := client.Get(u)
 	if err != nil {
 		log.Println(err)
 		return

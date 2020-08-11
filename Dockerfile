@@ -3,5 +3,6 @@ FROM golang:1.8.5-jessie
 WORKDIR /go/src/app
 # add source code
 ADD . src
+EXPOSE 8443
 # run main.go
 CMD ["go", "run", "src/https_server.go"]

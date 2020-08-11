@@ -6,13 +6,15 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"fmt"
 )
 
 func main() {
-	caCert, err := ioutil.ReadFile("/var/server.crt")
+	caCert, err := ioutil.ReadFile("/var/app/server.crt")
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("CA DATA", string(caCert))
 	caCertPool := x509.NewCertPool()
 	caCertPool.AppendCertsFromPEM(caCert)
 	cfg := &tls.Config{
@@ -24,7 +26,7 @@ func main() {
 		Addr:      ":8443",
 		TLSConfig: cfg,
 	}
-	log.Fatal(srv.ListenAndServeTLS("/var/server.crt", "/var/server.key"))
+	log.Fatal(srv.ListenAndServeTLS("/var/app/server.crt", "/var/app/server.key"))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
